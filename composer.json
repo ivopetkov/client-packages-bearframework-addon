@@ -1,0 +1,26 @@
+{
+    "name": "ivopetkov/client-packages-bearframework-addon",
+    "description": "Client packages addon for Bear Framework",
+    "keywords": ["Client packages", "addon", "Bear Framework"],
+    "homepage": "https://github.com/ivopetkov/client-packages-bearframework-addon",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ivo Petkov",
+            "email": "ivo@ivopetkov.com",
+            "homepage": "http://ivopetkov.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0",
+        "bearframework/bearframework": "1.*",
+        "ivopetkov/html5-dom-document-php": "2.*"
+    },
+    "require-dev": {
+        "bearframework/addon-tests": "0.3.*",
+        "phpunit/phpunit": "7.*"
+    },
+    "autoload": {
+        "files": ["autoload.php"]
+    }
+}
