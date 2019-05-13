@@ -90,7 +90,7 @@ class ClientPackages
                     $hasChange = false;
                     if ($libraryInsertTarget !== null) {
                         $libraryElement = $dom->createElement('script');
-                        $librarySource = include __DIR__ . '/assets/clientPackages.min.js.php';
+                        $librarySource = include __DIR__ . '/../assets/clientPackages.min.js.php';
 
                         $packagesToPrepare = array_unique($packagesToPrepare);
                         foreach ($packagesToPrepare as $packageToPrepare) {

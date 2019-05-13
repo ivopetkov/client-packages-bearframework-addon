@@ -80,7 +80,7 @@ class Utilities
                     });
                 }
                 //$result = file_get_contents(__DIR__ . '/../../../dev/addClientPackage.js');
-                $result = include __DIR__ . '/../../../assets/addClientPackage.min.js.js';
+                $result = include __DIR__ . '/../../../assets/addClientPackage.min.js.php';
                 $result = str_replace('["PLACE_JS_FILES_HERE"]', json_encode($jsFiles), $result);
                 $result = str_replace('["PLACE_JS_CODE_HERE"]', json_encode($jsCode), $result);
                 $result = str_replace('["PLACE_CSS_FILES_HERE"]', json_encode($cssFiles), $result);
