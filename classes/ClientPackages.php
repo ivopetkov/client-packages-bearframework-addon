@@ -91,6 +91,7 @@ class ClientPackages
                     if ($libraryInsertTarget !== null) {
                         $libraryElement = $dom->createElement('script');
                         $librarySource = include __DIR__ . '/../assets/clientPackages.min.js.php';
+                        //$librarySource = file_get_contents(__DIR__ . '/../dev/clientPackages.js');
 
                         $packagesToPrepare = array_unique($packagesToPrepare);
                         foreach ($packagesToPrepare as $packageToPrepare) {

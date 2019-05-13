@@ -35,17 +35,20 @@ var clientPackages = clientPackages || (function () {
     var get = function (name) {
         return new Promise(function (resolve, reject) {
             if (typeof data[name] === 'undefined') { // first request
+                if (typeof pendingGets[name] === 'undefined') {
+                    pendingGets[name] = [];
+                }
                 if (typeof urls[name] === 'undefined') {
                     reject();
                 } else {
                     data[name] = null;
-                    pendingGets.push([resolve, reject]);
+                    pendingGets[name].push([resolve, reject]);
                     var element = document.createElement("script");
                     element.setAttribute("src", urls[name]);
                     document.head.appendChild(element);
                 }
             } else if (data[name] === null) { // has pending request
-                pendingGets.push([resolve, reject]);
+                pendingGets[name].push([resolve, reject]);
             } else {
                 resolve((new Function(data[name]))());
             }
@@ -54,9 +57,11 @@ var clientPackages = clientPackages || (function () {
 
     var add = function (name, getCode) {
         data[name] = getCode;
-        var pendingGet = null;
-        while (typeof (pendingGet = pendingGets.shift()) !== 'undefined') {
-            pendingGet[0]((new Function(data[name]))());
+        if (typeof pendingGets[name] !== 'undefined') {
+            var pendingGet = null;
+            while (typeof (pendingGet = pendingGets[name].shift()) !== 'undefined') {
+                pendingGet[0]((new Function(data[name]))());
+            }
         }
     };
 
