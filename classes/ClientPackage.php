@@ -31,12 +31,6 @@ class ClientPackage
      *
      * @var string|null 
      */
-    public $init = null;
-
-    /**
-     *
-     * @var string|null 
-     */
     public $get = null;
 
     /**

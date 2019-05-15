@@ -1,8 +1,7 @@
 var clientPackages = clientPackages || (function () {
 
-    var pendingGets = [];
-    var data = [];
-    var urls = [];
+    var url = 'URL_TO_REPLACE';
+    var packages = [];
 
     Promise = window.Promise || function (callback) {
         var thenCallbacks = [];
@@ -32,42 +31,68 @@ var clientPackages = clientPackages || (function () {
         }, 16);
     };
 
+    var load = function (name) {
+        var r = new XMLHttpRequest();
+        r.onreadystatechange = function ()
+        {
+            if (r.readyState === 4)
+            {
+                if (r.status === 200) {
+                    (new Function(r.responseText))();
+                }
+            }
+        };
+        r.open('POST', url + '?n=' + name, true);
+        r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        r.send('');
+    };
+
+    var resolve = function (name, callback) {
+        callback((new Function(packages[name][1]))());
+    };
+
     var get = function (name) {
-        return new Promise(function (resolve, reject) {
-            if (typeof data[name] === 'undefined') { // first request
-                if (typeof pendingGets[name] === 'undefined') {
-                    pendingGets[name] = [];
-                }
-                if (typeof urls[name] === 'undefined') {
-                    reject();
-                } else {
-                    data[name] = null;
-                    pendingGets[name].push([resolve, reject]);
-                    var element = document.createElement("script");
-                    element.setAttribute("src", urls[name]);
-                    document.head.appendChild(element);
-                }
-            } else if (data[name] === null) { // has pending request
-                pendingGets[name].push([resolve, reject]);
+        return new Promise(function (resolveCallback, rejectCallback) {
+            var addPending = function () {
+                packages[name][2].push([resolveCallback, rejectCallback]);
+            };
+            if (typeof packages[name] === 'undefined') {
+                packages[name] = [0, null, []]; // status, getter, pending
+                addPending();
+                load(name);
             } else {
-                resolve((new Function(data[name]))());
+                if (packages[name][0] === 1) { // loaded
+                    resolve(name, resolveCallback);
+                } else if (packages[name][0] === 2) { // prepared
+                    addPending();
+                    (new Function(packages[name][3]))();
+                    delete packages[name][3];
+                } else { // loading
+                    addPending();
+                }
             }
         });
     };
 
-    var add = function (name, getCode) {
-        data[name] = getCode;
-        if (typeof pendingGets[name] !== 'undefined') {
-            var pendingGet = null;
-            while (typeof (pendingGet = pendingGets[name].shift()) !== 'undefined') {
-                pendingGet[0]((new Function(data[name]))());
-            }
+    var add = function (name, get) {
+        if (typeof packages[name] === 'undefined') {
+            packages[name] = [1, get, []]; // status, getter, pending
+        } else {
+            packages[name][0] = 1;
+            packages[name][1] = get;
+        }
+        var pending = null;
+        while (typeof (pending = packages[name][2].shift()) !== 'undefined') {
+            resolve(name, pending[0]);
         }
     };
 
-    var prepare = function (name, url) {
-        urls[name] = url;
+    var prepare = function (name, js) {
+        if (typeof packages[name] === 'undefined') {
+            packages[name] = [2, null, [], js]; // status, getter, pending, prepared
+        }
     };
+
 
     return {
         'get': get,

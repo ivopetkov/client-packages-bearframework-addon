@@ -27,13 +27,20 @@ $app->shortcuts
 $context->assets
         ->addDir('packages');
 
-$app->assets
-        ->addEventListener('beforePrepare', function(\BearFramework\App\Assets\BeforePrepareEventDetails $eventDetails) use ($context) {
-            $matchingDir = $context->dir . '/packages/';
-            if (strpos($eventDetails->filename, $matchingDir) === 0) {
-                $parts = explode('/', $eventDetails->filename);
-                $name = substr($parts[sizeof($parts) - 1], 0, -3);
-                $eventDetails->filename = Utilities::prepareAssetResponse($name);
+$path = '/-client-packages-' . md5($app->request->base);
+
+$app->routes
+        ->add('POST ' . $path, function() use ($app) {
+            $name = (string) $app->request->query->getValue('n');
+            $code = Utilities::getPrepareCode($name);
+            if ($code !== null) {
+                $response = new App\Response();
+                $response->content = $code;
+                $response->headers
+                ->set($response->headers->make('Content-Type', 'text/javascript'))
+                ->set($response->headers->make('X-Robots-Tag', 'noindex, nofollow'))
+                ->set($response->headers->make('Cache-Control', 'private, max-age=0'));
+                return $response;
             }
         });
 

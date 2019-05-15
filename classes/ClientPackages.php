@@ -23,17 +23,16 @@ class ClientPackages
      * Registers a new client package.
      * 
      * @param string $name The name of the client package
-     * @param string $version The package version.
      * @param callable $callback A callback that will be called when the package is needed
      * @return self Returns a instance to itself.
      * @throws \Exception
      */
-    public function add(string $name, string $version, callable $callback): self
+    public function add(string $name, callable $callback): self
     {
         if (isset(Utilities::$packages[$name])) {
             throw new \Exception('A client package named "' . $name . '" is alread added!');
         }
-        Utilities::$packages[$name] = [$callback, $version];
+        Utilities::$packages[$name] = [$callback, null];
         return $this;
     }
 
@@ -92,24 +91,14 @@ class ClientPackages
                         $libraryElement = $dom->createElement('script');
                         $librarySource = include __DIR__ . '/../assets/clientPackages.min.js.php';
                         //$librarySource = file_get_contents(__DIR__ . '/../dev/clientPackages.js');
-
-                        $packagesToPrepare = array_unique($packagesToPrepare);
-                        foreach ($packagesToPrepare as $packageToPrepare) {
-                            if (array_search($packageToPrepare, $packagesToEmbed) === false) {
-                                $url = Utilities::getUrl($packageToPrepare);
-                                if ($url !== null) {
-                                    $librarySource .= 'clientPackages.__p(' . json_encode($packageToPrepare) . ',' . json_encode($url) . ');';
-                                }
-                            }
-                        }
-
+                        $app = App::get();
+                        $librarySource = str_replace('URL_TO_REPLACE', $app->urls->get('/-client-packages-' . md5($app->request->base)), $librarySource);
                         $libraryElement->nodeValue = $librarySource;
                         $libraryInsertTarget->parentNode->insertBefore($libraryElement, $libraryInsertTarget);
                         $hasChange = true;
                     }
-                    if (!empty($packagesToEmbed)) {
-                        $packagesToEmbed = array_unique($packagesToEmbed);
-                        $resources = Utilities::getResources($packagesToEmbed);
+                    if (!empty($packagesToEmbed) || !empty($packagesToPrepare)) {
+                        $resources = Utilities::getResources($packagesToEmbed, $packagesToPrepare);
                         foreach ($resources['jsFiles'] as $url) {
                             $element = $dom->createElement('script');
                             $element->setAttribute('src', $url);
