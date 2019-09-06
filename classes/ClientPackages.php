@@ -93,7 +93,7 @@ class ClientPackages
                         //$librarySource = file_get_contents(__DIR__ . '/../dev/clientPackages.js');
                         $app = App::get();
                         $librarySource = str_replace('URL_TO_REPLACE', $app->urls->get('/-client-packages-' . md5($app->request->base)), $librarySource);
-                        $libraryElement->nodeValue = $librarySource;
+                        $libraryElement->textContent = $librarySource;
                         $libraryInsertTarget->parentNode->insertBefore($libraryElement, $libraryInsertTarget);
                         $hasChange = true;
                     }
@@ -114,7 +114,7 @@ class ClientPackages
                         }
                         foreach ($resources['jsCode'] as $code) {
                             $element = $dom->createElement('script');
-                            $element->nodeValue = $code;
+                            $element->textContent = $code;
                             $head->appendChild($element);
                             $hasChange = true;
                         }
@@ -129,7 +129,7 @@ class ClientPackages
                         foreach ($resources['cssCode'] as $code) {
                             $element = $dom->createElement('style');
                             $element->setAttribute('type', 'text/css');
-                            $element->nodeValue = $code;
+                            $element->textContent = $code;
                             $head->appendChild($element);
                             $hasChange = true;
                         }
