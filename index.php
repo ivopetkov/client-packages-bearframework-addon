@@ -15,40 +15,40 @@ $app = App::get();
 $context = $app->contexts->get(__DIR__);
 
 $context->classes
-        ->add('IvoPetkov\BearFrameworkAddons\ClientPackage', 'classes/ClientPackage.php')
-        ->add('IvoPetkov\BearFrameworkAddons\ClientPackages', 'classes/ClientPackages.php')
-        ->add('IvoPetkov\BearFrameworkAddons\ClientPackages\Internal\Utilities', 'classes/ClientPackages/Internal/Utilities.php');
+    ->add('IvoPetkov\BearFrameworkAddons\ClientPackage', 'classes/ClientPackage.php')
+    ->add('IvoPetkov\BearFrameworkAddons\ClientPackages', 'classes/ClientPackages.php')
+    ->add('IvoPetkov\BearFrameworkAddons\ClientPackages\Internal\Utilities', 'classes/ClientPackages/Internal/Utilities.php');
 
 $app->shortcuts
-        ->add('clientPackages', function() {
-            return new IvoPetkov\BearFrameworkAddons\ClientPackages();
-        });
+    ->add('clientPackages', function () {
+        return new IvoPetkov\BearFrameworkAddons\ClientPackages();
+    });
 
 $context->assets
-        ->addDir('packages');
+    ->addDir('packages');
 
 $path = '/-client-packages-' . md5($app->request->base);
 
 $app->routes
-        ->add('POST ' . $path, function() use ($app) {
-            $name = (string) $app->request->query->getValue('n');
-            $code = Utilities::getPrepareCode($name);
-            if ($code !== null) {
-                $response = new App\Response();
-                $response->content = $code;
-                $response->headers
+    ->add('POST ' . $path, function () use ($app) {
+        $name = (string) $app->request->query->getValue('n');
+        $code = Utilities::getPrepareCode($name);
+        if ($code !== null) {
+            $response = new App\Response();
+            $response->content = $code;
+            $response->headers
                 ->set($response->headers->make('Content-Type', 'text/javascript'))
                 ->set($response->headers->make('X-Robots-Tag', 'noindex, nofollow'))
                 ->set($response->headers->make('Cache-Control', 'private, max-age=0'));
-                return $response;
-            }
-        });
+            return $response;
+        }
+    });
 
 // Maybe it should not be global
 $app
-        ->addEventListener('beforeSendResponse', function(\BearFramework\App\BeforeSendResponseEventDetails $details) use ($app) {
-            $response = $details->response;
-            if ($response instanceof \BearFramework\App\Response\HTML) {
-                $response->content = $app->clientPackages->process($response->content);
-            }
-        });
+    ->addEventListener('beforeSendResponse', function (\BearFramework\App\BeforeSendResponseEventDetails $details) use ($app) {
+        $response = $details->response;
+        if ($response instanceof \BearFramework\App\Response\HTML) {
+            $response->content = $app->clientPackages->process($response->content);
+        }
+    });
