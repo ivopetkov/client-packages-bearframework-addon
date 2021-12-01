@@ -139,7 +139,7 @@ class Utilities
                         }
                     }
                 }
-                $result['jsCode'][] = 'clientPackages.__a(' . json_encode($name) . ', ' . json_encode(trim($package->get)) . ');';
+                $result['jsCode'][] = 'clientPackages.__a(' . json_encode($name) . ', ' . json_encode(trim((string)$package->get)) . ');';
             }
         };
 

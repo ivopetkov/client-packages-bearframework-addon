@@ -27,7 +27,7 @@ $app->shortcuts
 $context->assets
     ->addDir('packages');
 
-$path = '/-client-packages-' . md5($app->request->base);
+$path = '/-client-packages-' . md5((string)$app->request->base);
 
 $app->routes
     ->add('POST ' . $path, function () use ($app) {

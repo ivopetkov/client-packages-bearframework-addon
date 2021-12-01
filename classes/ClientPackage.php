@@ -122,5 +122,4 @@ class ClientPackage
         ];
         return $this;
     }
-
 }

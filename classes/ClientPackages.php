@@ -66,7 +66,7 @@ class ClientPackages
                                 }
                                 $elementsToRemove[] = $element;
                             } elseif ($rel === 'client-packages-embed') {
-                                $name = trim($element->getAttribute('name'));
+                                $name = trim((string)$element->getAttribute('name'));
                                 if (isset($name[0])) {
                                     if ($libraryInsertTarget === null) {
                                         $libraryInsertTarget = $element;
@@ -75,7 +75,7 @@ class ClientPackages
                                 }
                                 $elementsToRemove[] = $element;
                             } elseif ($rel === 'client-packages-prepare') {
-                                $name = trim($element->getAttribute('name'));
+                                $name = trim((string)$element->getAttribute('name'));
                                 if (isset($name[0])) {
                                     if ($libraryInsertTarget === null) {
                                         $libraryInsertTarget = $element;
@@ -147,5 +147,4 @@ class ClientPackages
         }
         return $html;
     }
-
 }
