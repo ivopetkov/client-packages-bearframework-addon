@@ -9,7 +9,6 @@
 
 namespace IvoPetkov\BearFrameworkAddons\ClientPackages\Internal;
 
-use BearFramework\App;
 use IvoPetkov\BearFrameworkAddons\ClientPackage;
 
 /**
@@ -35,25 +34,26 @@ class Utilities
     /**
      * 
      * @param string $name
+     * @param boolean $recursive
      * @return string|null
      */
-    static function getPrepareCode(string $name): ?string
+    static function getAddJsCode(string $name, bool $recursive = true): ?string
     {
         if (isset(self::$packages[$name])) {
-            $resources = Utilities::getResources([$name], [], false);
+            $resources = Utilities::getResources([$name], [], $recursive);
             $jsFiles = array_unique(array_merge($resources['jsFiles'], $resources['jsFilesAsync']));
             $jsCode = $resources['jsCode'];
             $cssFiles = $resources['cssFiles'];
             $cssCode = $resources['cssCode'];
             if (!empty($jsFiles)) {
                 $jsFiles = array_flip($jsFiles);
-                array_walk($jsFiles, function(&$value) {
+                array_walk($jsFiles, function (&$value) {
                     $value = 0;
                 });
             }
             if (!empty($cssFiles)) {
                 $cssFiles = array_flip($cssFiles);
-                array_walk($cssFiles, function(&$value) {
+                array_walk($cssFiles, function (&$value) {
                     $value = 0;
                 });
             }
@@ -107,7 +107,7 @@ class Utilities
         $embededPackages = [];
         $packagesToPrepare = array_flip($packagesToPrepare);
 
-        $embed = function($name) use (&$embed, &$embededPackages, &$packagesToPrepare, &$result, &$recursive) {
+        $embed = function ($name) use (&$embed, &$embededPackages, &$packagesToPrepare, &$result, &$recursive) {
             if (isset($embededPackages[$name])) {
                 return;
             }
@@ -152,7 +152,7 @@ class Utilities
                 if (isset($embededPackages[$name])) {
                     continue;
                 }
-                $code = self::getPrepareCode($name);
+                $code = self::getAddJsCode($name, false);
                 if ($code !== null) {
                     $result['jsCode'][] = 'clientPackages.__p(' . json_encode($name) . ',' . json_encode($code) . ');';
                 }
@@ -161,5 +161,4 @@ class Utilities
 
         return $result;
     }
-
 }

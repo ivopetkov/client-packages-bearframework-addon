@@ -32,7 +32,7 @@ $path = '/-client-packages-' . md5((string)$app->request->base);
 $app->routes
     ->add('POST ' . $path, function () use ($app) {
         $name = (string) $app->request->query->getValue('n');
-        $code = Utilities::getPrepareCode($name);
+        $code = Utilities::getAddJsCode($name, true);
         if ($code !== null) {
             $response = new App\Response();
             $response->content = $code;
