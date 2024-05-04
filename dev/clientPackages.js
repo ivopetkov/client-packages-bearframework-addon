@@ -33,10 +33,8 @@ var clientPackages = clientPackages || (function () {
 
     var load = function (name) {
         var r = new XMLHttpRequest();
-        r.onreadystatechange = function ()
-        {
-            if (r.readyState === 4)
-            {
+        r.onreadystatechange = function () {
+            if (r.readyState === 4) {
                 if (r.status === 200) {
                     (new Function(r.responseText))();
                 }
