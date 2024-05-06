@@ -32,17 +32,23 @@ var clientPackages = clientPackages || (function () {
     };
 
     var load = function (name) {
-        var r = new XMLHttpRequest();
-        r.onreadystatechange = function () {
-            if (r.readyState === 4) {
-                if (r.status === 200) {
-                    (new Function(r.responseText))();
+        var xhp = new XMLHttpRequest();
+        xhp.onreadystatechange = function () {
+            if (xhp.readyState === 4) {
+                if (xhp.status === 200) {
+                    (new Function(xhp.responseText))();
+                    return;
+                }
+                packages[name][0] = -1; // error
+                var pending = null;
+                while (typeof (pending = packages[name][2].shift()) !== 'undefined') {
+                    pending[1](); // reject
                 }
             }
         };
-        r.open('POST', url + '?n=' + name, true);
-        r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        r.send('');
+        xhp.open('POST', url + '?n=' + name, true);
+        xhp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhp.send('');
     };
 
     var resolve = function (name, callback) {
@@ -67,6 +73,10 @@ var clientPackages = clientPackages || (function () {
                     delete packages[name][3];
                 } else { // loading
                     addPending();
+                    if (packages[name][0] === -1) {
+                        packages[name][0] = 0; // loading
+                        load(name);
+                    }
                 }
             }
         });
