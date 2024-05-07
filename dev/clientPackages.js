@@ -46,6 +46,7 @@ var clientPackages = clientPackages || (function () {
                 }
             }
         };
+        xhp.timeout = timeout * 1000;
         xhp.open('POST', url + '?n=' + name, true);
         xhp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhp.send('');
@@ -55,15 +56,19 @@ var clientPackages = clientPackages || (function () {
         callback((new Function(packages[name][1]))());
     };
 
-    var get = function (name) {
+    var get = function (name, options) { // Available options: timeout (int in seconds)
         return new Promise(function (resolveCallback, rejectCallback) {
             var addPending = function () {
                 packages[name][2].push([resolveCallback, rejectCallback]);
             };
+            if (typeof options === 'undefined') {
+                options = {};
+            }
+            var timeout = typeof options.timeout !== "undefined" ? options.timeout : 60;
             if (typeof packages[name] === 'undefined') {
                 packages[name] = [0, null, []]; // status, getter, pending
                 addPending();
-                load(name);
+                load(name, timeout);
             } else {
                 if (packages[name][0] === 1) { // loaded
                     resolve(name, resolveCallback);
@@ -75,7 +80,7 @@ var clientPackages = clientPackages || (function () {
                     addPending();
                     if (packages[name][0] === -1) {
                         packages[name][0] = 0; // loading
-                        load(name);
+                        load(name, timeout);
                     }
                 }
             }
