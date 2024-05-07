@@ -31,7 +31,7 @@ var clientPackages = clientPackages || (function () {
         }, 16);
     };
 
-    var load = function (name) {
+    var load = function (name, timeout) {
         var xhp = new XMLHttpRequest();
         xhp.onreadystatechange = function () {
             if (xhp.readyState === 4) {
