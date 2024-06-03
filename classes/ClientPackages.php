@@ -58,16 +58,17 @@ class ClientPackages
                     $elementsToRemove = [];
                     if ($elements->length > 0) {
                         foreach ($elements as $element) {
+                            $omitLibrary = $element->getAttribute('omitlibrary') === 'true';
                             $rel = $element->getAttribute('rel');
                             if ($rel === 'client-packages') {
-                                if ($libraryInsertTarget === null) {
+                                if (!$omitLibrary && $libraryInsertTarget === null) {
                                     $libraryInsertTarget = $element;
                                 }
                                 $elementsToRemove[] = $element;
                             } elseif ($rel === 'client-packages-embed') {
                                 $name = trim((string)$element->getAttribute('name'));
                                 if (isset($name[0])) {
-                                    if ($libraryInsertTarget === null) {
+                                    if (!$omitLibrary && $libraryInsertTarget === null) {
                                         $libraryInsertTarget = $element;
                                     }
                                     $packagesToEmbed[] = $name;
@@ -76,7 +77,7 @@ class ClientPackages
                             } elseif ($rel === 'client-packages-prepare') {
                                 $name = trim((string)$element->getAttribute('name'));
                                 if (isset($name[0])) {
-                                    if ($libraryInsertTarget === null) {
+                                    if (!$omitLibrary && $libraryInsertTarget === null) {
                                         $libraryInsertTarget = $element;
                                     }
                                     $packagesToPrepare[] = $name;

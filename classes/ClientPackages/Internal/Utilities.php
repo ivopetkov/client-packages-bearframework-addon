@@ -139,7 +139,7 @@ class Utilities
                         }
                     }
                 }
-                $result['jsCode'][] = 'clientPackages.__a(' . json_encode($name) . ', ' . json_encode(trim((string)$package->get)) . ');';
+                $result['jsCode'][] = 'if(typeof clientPackages!=="undefined"){clientPackages.__a(' . json_encode($name) . ', ' . json_encode(trim((string)$package->get)) . ');}'; // clientPackages may be omitted
             }
         };
 
@@ -154,7 +154,7 @@ class Utilities
                 }
                 $code = self::getAddJsCode($name, false);
                 if ($code !== null) {
-                    $result['jsCode'][] = 'clientPackages.__p(' . json_encode($name) . ',' . json_encode($code) . ');';
+                    $result['jsCode'][] = 'if(typeof clientPackages!=="undefined"){clientPackages.__p(' . json_encode($name) . ',' . json_encode($code) . ');}'; // clientPackages may be omitted
                 }
             }
         }
