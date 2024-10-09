@@ -36,7 +36,7 @@ class ClientPackage
     /**
      * 
      * @param string $url
-     * @param array $options
+     * @param array $options Available values: async=>true
      * @return self
      */
     public function addJSFile(string $url, array $options = []): self

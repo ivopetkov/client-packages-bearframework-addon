@@ -146,7 +146,6 @@ class ClientPackages
                 }
                 foreach ($resources['cssCode'] as $code) {
                     $element = $dom->createElement('style');
-                    $element->setAttribute('type', 'text/css');
                     $element->textContent = $code;
                     $head->appendChild($element);
                     $hasChange = true;
