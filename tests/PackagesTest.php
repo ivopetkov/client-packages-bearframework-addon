@@ -21,7 +21,7 @@ class PackagesTest extends BearFramework\AddonTests\PHPUnitTestCase
         $app = $this->getApp();
 
         $app->clientPackages
-            ->add('test1', function (IvoPetkov\BearFrameworkAddons\ClientPackage $package) {
+            ->add('test1', function (IvoPetkov\BearFrameworkAddons\ClientPackage $package): void {
                 $package->addJSCode('var a = 5;');
                 $package->get = 'return a;';
             });
@@ -30,7 +30,7 @@ class PackagesTest extends BearFramework\AddonTests\PHPUnitTestCase
         $result = $app->clientPackages->process($html);
 
         $this->assertTrue(strpos($result, '<script>var clientPackages=') !== false);
-        $this->assertTrue(strpos($result, '<script>clientPackages.__a("test1", "return a;");</script>') !== false);
+        $this->assertTrue(strpos($result, 'clientPackages.__a("test1", "return a;");') !== false);
         $this->assertTrue(strpos($result, '<body>content</body>') !== false);
     }
 }

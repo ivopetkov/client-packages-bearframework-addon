@@ -46,7 +46,7 @@ $app->routes
 
 // Maybe it should not be global
 $app
-    ->addEventListener('beforeSendResponse', function (\BearFramework\App\BeforeSendResponseEventDetails $details) use ($app) {
+    ->addEventListener('beforeSendResponse', function (\BearFramework\App\BeforeSendResponseEventDetails $details) use ($app): void {
         $response = $details->response;
         if ($response instanceof \BearFramework\App\Response\HTML) {
             $response->content = $app->clientPackages->process($response->content);

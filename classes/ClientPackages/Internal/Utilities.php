@@ -47,13 +47,13 @@ class Utilities
             $cssCode = $resources['cssCode'];
             if (!empty($jsFiles)) {
                 $jsFiles = array_flip($jsFiles);
-                array_walk($jsFiles, function (&$value) {
+                array_walk($jsFiles, function (&$value): void {
                     $value = 0;
                 });
             }
             if (!empty($cssFiles)) {
                 $cssFiles = array_flip($cssFiles);
-                array_walk($cssFiles, function (&$value) {
+                array_walk($cssFiles, function (&$value): void {
                     $value = 0;
                 });
             }
@@ -107,7 +107,7 @@ class Utilities
         $embededPackages = [];
         $packagesToPrepare = array_flip($packagesToPrepare);
 
-        $embed = function ($name) use (&$embed, &$embededPackages, &$packagesToPrepare, &$result, &$recursive) {
+        $embed = function ($name) use (&$embed, &$embededPackages, &$packagesToPrepare, &$result, &$recursive): void {
             if (isset($embededPackages[$name])) {
                 return;
             }
