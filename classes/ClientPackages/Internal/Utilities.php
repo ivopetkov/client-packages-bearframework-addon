@@ -115,6 +115,15 @@ class Utilities
             $package = self::getPackage($name);
             if ($package !== null) {
                 if (!empty($package->resources)) {
+                    if ($recursive) {
+                        foreach ($package->resources as $resource) {
+                            if ($resource['type'] === 'prepare') {
+                                $packagesToPrepare[$resource['name']] = true;
+                            } elseif ($resource['type'] === 'embed') {
+                                $embed($resource['name']);
+                            }
+                        }
+                    }
                     foreach ($package->resources as $resource) {
                         if ($resource['type'] === 'file') {
                             if ($resource['mimeType'] === 'text/javascript') {
@@ -132,10 +141,6 @@ class Utilities
                             } elseif ($resource['mimeType'] === 'text/css') {
                                 $result['cssCode'][] = $resource['value'];
                             }
-                        } elseif ($recursive && $resource['type'] === 'prepare') {
-                            $packagesToPrepare[$resource['name']] = true;
-                        } elseif ($recursive && $resource['type'] === 'embed') {
-                            $embed($resource['name']);
                         }
                     }
                 }
